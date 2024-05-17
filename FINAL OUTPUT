@@ -1,0 +1,49 @@
+import requests
+
+# Function to search for an artist and retrieve their information
+def search_artist(artist_name):
+    try:
+        # Spotify API endpoint for searching artists
+        url = "https://api.spotify.com/v1/search"
+        # Parameters for the search request
+        params = {
+            "q": artist_name,
+            "type": "artist",
+            "limit": 1
+        }
+        # Make the API request
+        response = requests.get(url, params=params)
+        # Check if the request was successful
+        response.raise_for_status()
+        # Parse the JSON response
+        data = response.json()
+        # Extract the artist information
+        artist_info = data["artists"]["items"][0]
+        return artist_info
+    except (requests.RequestException, KeyError, IndexError) as e:
+        print("Error:", e)
+        return None
+
+# Function to display artist information
+def display_artist_info(artist_info):
+    if artist_info:
+        print("Artist:", artist_info["name"])
+        print("Genres:", ", ".join(artist_info["genres"]))
+        print("Followers:", artist_info["followers"]["total"])
+        print("Popularity:", artist_info["popularity"])
+    else:
+        print("No artist information available.")
+
+# Main function
+def main():
+    # Prompt the user to enter an artist name
+    artist_name = input("Enter the name of an artist: ")
+    # Search for the artist
+    artist_info = search_artist(artist_name)
+    # Display artist information
+    display_artist_info(artist_info)
+
+# Run the program
+if __name__ == "__main__":
+    main()
+
